@@ -31,6 +31,9 @@ public class Alert extends AuditableAbstractAggregateRoot {
     @Column(name = "location", nullable = false, length = 100)
     private String location;
 
+    @Column(name = "district", length = 80)
+    private String district;
+
     /**
      * The type of alert, defined by the {@link AlertType} enumeration.
      */
@@ -66,14 +69,16 @@ public class Alert extends AuditableAbstractAggregateRoot {
      * Constructor for creating a new Alert instance.
      *
      * @param location The description of the location.
+     * @param district The district resolved from the related report coordinates.
      * @param type The type of alert ({@link AlertType}).
      * @param description The detailed description of the alert.
      * @param userId The ID of the user associated with the alert.
      * @param imageUrl The URL of the image evidence.
      * @param reportId The ID of the related report (can be null).
      */
-    public Alert(String location, AlertType type, String description, Long userId, String imageUrl, Long reportId) {
+    public Alert(String location, String district, AlertType type, String description, Long userId, String imageUrl, Long reportId) {
         this.location = location;
+        this.district = district;
         this.type = type;
         this.description = description;
         this.userId = userId;

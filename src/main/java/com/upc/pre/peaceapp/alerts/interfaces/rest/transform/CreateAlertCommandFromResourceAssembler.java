@@ -10,6 +10,7 @@ public class CreateAlertCommandFromResourceAssembler {
     public CreateAlertCommand toCommand(CreateAlertResource resource) {
         return new CreateAlertCommand(
                 resource.location(),
+                resource.district(),
                 resource.type(),
                 resource.description(),
                 resource.userId(),

@@ -8,6 +8,7 @@ import com.upc.pre.peaceapp.alerts.domain.services.AlertCommandService;
 import com.upc.pre.peaceapp.alerts.infrastructure.persistence.jpa.AlertRepository;
 import com.upc.pre.peaceapp.alerts.application.internal.outboundservices.ExternalUserService;
 import com.upc.pre.peaceapp.alerts.application.internal.outboundservices.ExternalReportService;
+import com.upc.pre.peaceapp.alerts.infrastructure.websocket.EmergencyAlertPublisher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +22,16 @@ public class AlertCommandServiceImpl implements AlertCommandService {
     private final AlertRepository alertRepository;
     private final ExternalUserService userService;
     private final ExternalReportService reportService;
+    private final EmergencyAlertPublisher emergencyAlertPublisher;
 
     public AlertCommandServiceImpl(AlertRepository alertRepository,
                                    ExternalUserService userService,
-                                   ExternalReportService reportService) {
+                                   ExternalReportService reportService,
+                                   EmergencyAlertPublisher emergencyAlertPublisher) {
         this.alertRepository = alertRepository;
         this.userService = userService;
         this.reportService = reportService;
+        this.emergencyAlertPublisher = emergencyAlertPublisher;
     }
 
     @Override
@@ -47,6 +51,7 @@ public class AlertCommandServiceImpl implements AlertCommandService {
 
         var alert = new Alert(
                 command.location(),
+                command.district(),
                 command.type(),
                 command.description(),
                 command.userId(),
@@ -56,6 +61,7 @@ public class AlertCommandServiceImpl implements AlertCommandService {
 
         var savedAlert = alertRepository.save(alert);
         log.info("Alert created successfully with ID: {}", savedAlert.getId());
+        emergencyAlertPublisher.publishIfEmergency(savedAlert);
         return Optional.of(savedAlert);
     }
 

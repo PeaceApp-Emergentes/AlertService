@@ -11,6 +11,7 @@ public class AlertResourceFromEntityAssembler {
         return new AlertResource(
                 alert.getId(),
                 alert.getLocation(),
+                alert.getDistrict(),
                 alert.getType(),
                 alert.getDescription(),
                 alert.getUserId(),

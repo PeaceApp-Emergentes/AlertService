@@ -4,6 +4,7 @@ import com.upc.pre.peaceapp.alerts.domain.model.valueobjects.AlertType;
 
 public record CreateAlertCommand(
         String location,
+        String district,
         AlertType type,
         String description,
         Long userId,

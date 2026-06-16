@@ -4,5 +4,6 @@ public enum AlertType {
     ACCIDENT,
     DARK_AREA,
     HARASSMENT,
+    EMERGENCY,
     OTHER
 }

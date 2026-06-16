@@ -12,6 +12,9 @@ public record AlertResource(
         @Schema(description = "Alert location", example = "Av. Primavera 123, Lima")
         String location,
 
+        @Schema(description = "District resolved from the related report coordinates", example = "San Borja")
+        String district,
+
         @Schema(description = "Alert type", example = "ROBBERY")
         AlertType type,
 
