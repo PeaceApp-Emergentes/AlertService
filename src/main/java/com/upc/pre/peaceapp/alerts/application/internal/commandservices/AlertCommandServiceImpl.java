@@ -2,6 +2,7 @@ package com.upc.pre.peaceapp.alerts.application.internal.commandservices;
 
 import com.upc.pre.peaceapp.alerts.domain.model.aggregates.Alert;
 import com.upc.pre.peaceapp.alerts.domain.model.commands.CreateAlertCommand;
+import com.upc.pre.peaceapp.alerts.domain.model.valueobjects.AlertType;
 import com.upc.pre.peaceapp.alerts.domain.model.commands.DeleteAllAlertsByReportIdCommand;
 import com.upc.pre.peaceapp.alerts.domain.model.commands.DeleteAllAlertsByUserIdCommand;
 import com.upc.pre.peaceapp.alerts.domain.services.AlertCommandService;
@@ -47,6 +48,12 @@ public class AlertCommandServiceImpl implements AlertCommandService {
         if (command.reportId() != null && !reportService.existsById(command.reportId())) {
             log.error("Report with ID {} does not exist", command.reportId());
             throw new IllegalArgumentException("Report not found");
+        }
+
+        // Un SOS de emergencia solo es valido si hay una municipalidad con cobertura en la zona.
+        if (command.type() == AlertType.EMERGENCY && !userService.hasCoverage(command.district())) {
+            log.warn("SOS rejected: no municipality coverage for district '{}'", command.district());
+            throw new IllegalArgumentException("No hay una municipalidad con cobertura en esta zona. No se pudo enviar el SOS.");
         }
 
         var alert = new Alert(
